@@ -2,7 +2,12 @@
   <div>
     <h1>Vísitala Neysluverðs</h1>
     <div style="width: 100%; height: 30rem">
-      <Line ref="lineChart" :data="data" :options="options" />
+      <!-- show the loading icon if the data is not yet available -->
+      <div v-if="!data.datasets.length">
+        <ChartLoading />
+      </div>
+      <!-- show the line chart if the data is available -->
+      <Line ref="lineChart" :data="data" v-if="data.datasets.length" />
     </div>
   </div>
 </template>
@@ -20,6 +25,7 @@ import {
 } from "chart.js";
 import { Line } from "vue-chartjs";
 import GhostIcon from "../assets/ghost.svg";
+import ChartLoading from "./ChartLoading.vue";
 
 ChartJS.register(
   CategoryScale,
@@ -34,26 +40,40 @@ ChartJS.register(
 export default {
   name: "App",
   components: {
+    ChartLoading,
     Line,
   },
   data() {
     return {
       data: {
-        labels: [],
-        datasets: [
-          {
-            label: "Visitala neysluverðs",
-            backgroundColor: "rgba(255, 99, 132, 0.2)",
-            data: [],
+        labels: [] as (number | "")[],
+        datasets: [] as {
+          label: string;
+          backgroundColor: string;
+          data: (number | { x: number; y: number } | null)[];
+        }[],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          tooltips: {
+            interaction: {
+              mode: "index",
+            },
           },
-        ],
+        },
       },
     };
   },
   mounted() {
     async function getXmlData() {
       const response = await fetch(
-        "https://cors-anywhere.herokuapp.com/https://www.sedlabanki.is/xmltimeseries/Default.aspx?DagsFra=1990-01-01&DagsTil=2022-12-23&TimeSeriesID=2&Type=xml"
+        "https://proxy.cors.sh/https://www.sedlabanki.is/xmltimeseries/Default.aspx?DagsFra=1990-01-01&DagsTil=2022-12-23&TimeSeriesID=2&Type=xml",
+        {
+          headers: {
+            // use APIKEY from .env
+            "x-cors-api-key": import.meta.env.VITE_APIKEY,
+          },
+        }
       );
       const xmlString = await response.text();
       const parser = new DOMParser();
@@ -77,7 +97,13 @@ export default {
         }
       );
       const values = Array.from(xmlData.querySelectorAll("Value")).map(
-        (node) => node.textContent
+        (node) => {
+          const value = Number(node.textContent);
+          if (isNaN(value)) {
+            return null;
+          }
+          return value;
+        }
       );
 
       return {
