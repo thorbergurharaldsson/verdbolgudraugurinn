@@ -7,7 +7,7 @@ export default {
 </script>
 
 <template>
-  <ContentLoader viewBox="0 0 100% 400">
+  <ContentLoader width="100%" viewBox="0 0 500 200">
     <rect x="20" y="5" rx="0" ry="0" width="1" height="170" />
     <rect x="20" y="175" rx="0" ry="0" width="360" height="1" />
 
