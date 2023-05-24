@@ -67,7 +67,7 @@ export default {
   mounted() {
     async function getXmlData() {
       const response = await fetch(
-        "https://proxy.cors.sh/https://www.sedlabanki.is/xmltimeseries/Default.aspx?DagsFra=1990-01-01&DagsTil=2022-12-23&TimeSeriesID=2&Type=xml",
+        "https://proxy.cors.sh/https://www.sedlabanki.is/xmltimeseries/Default.aspx?DagsFra=2019-01-01&DagsTil=2030-12-31&TimeSeriesID=2&Type=xml",
         {
           headers: {
             // use APIKEY from .env
