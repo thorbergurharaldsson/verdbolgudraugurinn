@@ -11,7 +11,7 @@ import HelloWorld from "./components/HelloWorld.vue";
       <HelloWorld msg="Verðbólgudraugurinn!" />
       <nav>
         <RouterLink to="/">Verðbólgan</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <!-- <RouterLink to="/about">About</RouterLink> -->
       </nav>
     </div>
   </header>
