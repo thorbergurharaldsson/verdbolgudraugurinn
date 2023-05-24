@@ -85,17 +85,28 @@ export default {
       const xmlData = await getXmlData();
 
       const seenYears = new Set();
-      const labels = Array.from(xmlData.querySelectorAll("Date")).map(
-        (node) => {
-          const date = new Date(node.textContent?.toString() ?? "");
-          const year = date.getFullYear();
-          if (year % 5 === 0 && !seenYears.has(year)) {
-            seenYears.add(year);
-            return year;
-          }
-          return "";
-        }
-      );
+      const labels = Array.from(xmlData.querySelectorAll("Date")).map((node) => {
+        const date = new Date(node.textContent?.toString() ?? "");
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // Get the month (0-11)
+        const monthNames = [
+          "Janúar",
+          "Febrúar",
+          "Mars",
+          "Apríl",
+          "Maí",
+          "Júní",
+          "Júlí",
+          "Ágúst",
+          "September",
+          "Október",
+          "Nóvember",
+          "Desember",
+        ];
+
+        return monthNames[month - 1] + " " + year.toString();
+      });
+
       const values = Array.from(xmlData.querySelectorAll("Value")).map(
         (node) => {
           const value = Number(node.textContent);
